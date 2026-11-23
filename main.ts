@@ -4,8 +4,9 @@
 // screenshots/ from beside this file to /output and writes /output/dossier.json, the summary
 // the judge reads, with the vendored make.fun library. The game is a 2D top-down open-world
 // crime game: a 3200x3200 city to explore on foot and by car, traffic and pedestrians, cars
-// to steal and drive, a wanted level with police who respond, four story missions, combat,
-// a HUD with a minimap, a start screen and a localStorage save.
+// to steal and drive, a wanted level with an SBPD dispatch board and an Air One helicopter,
+// four story missions worth $3,400, fist and pistol combat, a HUD with a mission card,
+// weapon slots, speedometer and circular minimap, a start screen and a localStorage save.
 //
 // Serve it locally with `node serve.ts`, then open http://localhost:8080.
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:

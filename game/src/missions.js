@@ -31,6 +31,31 @@ export function currentObjective(missions) {
   return mission.objectives[missions.objective] || null;
 }
 
+/**
+ * Where the story stands, for the HUD mission card: which job this is out of the
+ * whole run, which objective inside it, the payout waiting at the end, and the timed
+ * objective's seconds left (null when the job is not timed).
+ */
+export function missionProgress(missions) {
+  const mission = currentMission(missions);
+  if (mission === null) {
+    return { index: MISSIONS.length, total: MISSIONS.length, objective: 0, objectives: 0, pay: 0, secondsLeft: null, title: '' };
+  }
+  const objective = currentObjective(missions);
+  const secondsLeft = objective !== null && objective.kind === 'timed'
+    ? Math.max(0, objective.seconds - missions.timer)
+    : null;
+  return {
+    index: missions.index + 1,
+    total: MISSIONS.length,
+    objective: missions.objective + 1,
+    objectives: mission.objectives.length,
+    pay: mission.pay,
+    secondsLeft,
+    title: mission.title,
+  };
+}
+
 function say(missions, lines) {
   missions.dialog = [...lines];
   missions.dialogTimer = 4;

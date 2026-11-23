@@ -40,7 +40,7 @@ export function wantedLevel(police) {
 }
 
 /** How many foot cops and patrol cars the current wanted level calls for. */
-function desiredForce(wanted) {
+function wantedDispatchForce(wanted) {
   return {
     cops: wanted >= 1 ? Math.min(3, wanted) : 0,
     patrols: wanted >= 2 ? Math.min(3, wanted - 1) : 0,
@@ -79,7 +79,7 @@ export function stepPolice(police, state, bullets, particles, dt) {
   }
 
   const wanted = police.wanted || 0;
-  const want = desiredForce(wanted);
+  const want = wantedDispatchForce(wanted);
   police.spawnTimer -= dt;
   if (police.spawnTimer <= 0) {
     police.spawnTimer = POLICE.spawnEvery;

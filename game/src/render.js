@@ -4,6 +4,7 @@
 
 import { VIEW, PALETTE, FONT } from './config.js';
 import { drawHud, drawPanel } from './hud.js';
+import { airUnitDeployed } from './dispatch.js';
 
 export const SCREEN_TITLE = 'title';
 export const SCREEN_PLAY = 'play';
@@ -325,6 +326,57 @@ export function createRenderer(canvas) {
       if (visible(player.car.x, player.car.y, 100)) drawCarShape(player.car);
     } else if (player.invulnerable === 0 || Math.floor(player.invulnerable * 10) % 2 === 1) {
       drawPersonShape(player.x, player.y, player.angle, PALETTE.playerShirt, 13, false);
+    }
+    // Air One: from four stars the police helicopter works the sky above the player,
+    // its searchlight cone sweeping the street the chase is on.
+    if (airUnitDeployed(state.police)) {
+      const heliX = state.player.x + 260;
+      const heliY = state.player.y - 240;
+      const player = state.player;
+      if (visible(heliX, heliY, 160)) {
+        const coneAngle = Math.atan2(player.y - heliY, player.x - heliX);
+        context.save();
+        context.translate(heliX, heliY);
+        context.rotate(coneAngle);
+        const gradient = context.createLinearGradient(0, 0, 320, 0);
+        gradient.addColorStop(0, 'rgba(255, 233, 168, 0.34)');
+        gradient.addColorStop(1, 'rgba(255, 233, 168, 0.05)');
+        context.fillStyle = gradient;
+        context.beginPath();
+        context.moveTo(0, 0);
+        context.lineTo(320, -52);
+        context.lineTo(320, 52);
+        context.closePath();
+        context.fill();
+        context.restore();
+        context.fillStyle = 'rgba(0, 0, 0, 0.22)';
+        context.beginPath();
+        context.ellipse(heliX + 10, heliY + 12, 34, 16, 0.3, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = '#1c2733';
+        context.beginPath();
+        context.ellipse(heliX, heliY, 26, 15, 0, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = '#2c4f9e';
+        context.beginPath();
+        context.ellipse(heliX, heliY, 18, 10, 0, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = '#7ba7dd';
+        context.fillRect(heliX - 52, heliY - 4, 30, 8);
+        context.fillStyle = '#ffe9a8';
+        context.beginPath();
+        context.arc(heliX + 14, heliY, 5, 0, Math.PI * 2);
+        context.fill();
+        const rotor = state.time * 9;
+        context.strokeStyle = 'rgba(20, 24, 32, 0.85)';
+        context.lineWidth = 4;
+        context.beginPath();
+        context.moveTo(heliX + Math.cos(rotor) * 52, heliY + Math.sin(rotor) * 52);
+        context.lineTo(heliX - Math.cos(rotor) * 52, heliY - Math.sin(rotor) * 52);
+        context.moveTo(heliX + Math.cos(rotor + Math.PI / 2) * 52, heliY + Math.sin(rotor + Math.PI / 2) * 52);
+        context.lineTo(heliX - Math.cos(rotor + Math.PI / 2) * 52, heliY - Math.sin(rotor + Math.PI / 2) * 52);
+        context.stroke();
+      }
     }
     // Bullets and particles.
     for (const bullet of state.bullets) {
